@@ -111,7 +111,36 @@ export const getFiles = async ({
       queries,
     );
 
-    console.log({ files });
+    // --- THE SMART INTERCEPTOR: Populate missing relationship data ---
+    const populatedDocuments = await Promise.all(
+      files.documents.map(async (file) => {
+        // If Appwrite lazily returned a string instead of the full object
+        if (typeof file.owner === "string") {
+          try {
+            // Optimization: If the owner is the current user, attach their data directly without a DB call
+            if (file.owner === currentUser.$id) {
+              return { ...file, owner: currentUser };
+            }
+            // If it is a shared file owned by someone else, fetch their specific profile
+            const ownerData = await databases.getDocument(
+              appwriteConfig.databaseId,
+              appwriteConfig.usersCollectionId,
+              file.owner,
+            );
+            return { ...file, owner: ownerData };
+          } catch (error) {
+            console.error("Failed to fetch owner details:", error);
+            return file;
+          }
+        }
+        return file;
+      }),
+    );
+
+    // Overwrite the raw documents array with our fully populated data
+    files.documents = populatedDocuments;
+    // -----------------------------------------------------------------
+
     return parseStringify(files);
   } catch (error) {
     handleError(error, "Failed to get files");

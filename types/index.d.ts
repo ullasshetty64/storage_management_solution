@@ -69,8 +69,33 @@ declare interface ThumbnailProps {
   imageClassName?: string;
 }
 
+// 1. ADDED THE NEW CUSTOM INTERFACE HERE
+declare interface AppwriteFile {
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $permissions: string[];
+  $databaseId: string;
+  $collectionId: string;
+  name: string;
+  url: string;
+  type: string;
+  extension: string;
+  size: number;
+  bucketFileId: string;
+  accountId: string;
+  owner: {
+    $id: string;
+    fullName: string;
+    email: string;
+    avatar: string;
+  };
+  users: string[];
+}
+
+// 2. UPDATED ShareInputProps TO USE AppwriteFile
 declare interface ShareInputProps {
-  file: Models.Document;
+  file: AppwriteFile;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: (email: string) => void;
 }
