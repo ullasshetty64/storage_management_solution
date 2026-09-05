@@ -61,7 +61,7 @@ Ensure you have the following installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/ullasshetty64/storage_management_solution.git](https://github.com/ullasshetty64/storage_management_solution.git)
+git clone https://github.com/ullasshetty64/storage_management_solution.git
 cd storage_management_solution
 ```
 
